@@ -16,7 +16,49 @@ model Product{
     filePath String 
     imagePath String 
     description String 
+    
+    //this is kept if even though we cannot buy it previous customers who bought it can view this one
     isAvailableForPurchase Boolean @default(true)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    order Order[]
+    downloadVerification DownloadVerfication[]
+}
+
+model User {
+    id String @id @default(uuid())
+    email String @unique 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    orders Order[]
+
+}
+
+model Order {
+    id String @id @default(uuid())
+
+    // since after some time there will be price increase or decrease for the product so it is important to know how much they paid during purchase
+    pricePaidInCents Int 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt 
+
+    userId String 
+    productId String
+
+    //onDelete cascade makes all the products to delete when an user is deleted
+    user User @relation(fields: [userId], references: [id],onDelete:Cascade)
+   
+    //onDelete restrict makes the products to still remain the order schema even if the product is deleted
+    product Product @relation(fields: [productId], references: [id])
+
+}
+
+//helps to download the product for a given period of time
+model Download Verification {
+    id String @id @default(uuid()) 
+    expiredAt DateTime 
+    createdAt DateTime @default(now())
+    productId String 
+    product Product @relation( fields: [ productId], references: [id], onDelete:Cascade )
 }
