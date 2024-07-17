@@ -4,12 +4,12 @@ generator client {
 }
 
 datasource db{
-    provider = "sqlite"
-    url = env("DATABASE_URL")
+    provider = "mongodb"
+    url = "mongodb://localhost:27017/e-commerce"
 }
 
 model Product{
-    id String @id @default(uuid())
+    id String @id @default(auto()) @map("_id") @db.ObjectId
     name String
     //using cents since this iis the unit used in stripe so it will be easier
     priceInCents Int 
@@ -22,11 +22,11 @@ model Product{
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     order Order[]
-    downloadVerification DownloadVerfication[]
+    downloadVerification DownloadVerification[]
 }
 
 model User {
-    id String @id @default(uuid())
+    id String @id @default(auto()) @map("_id") @db.ObjectId
     email String @unique 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -36,7 +36,7 @@ model User {
 }
 
 model Order {
-    id String @id @default(uuid())
+    id String @id @default(auto()) @map("_id") @db.ObjectId
 
     // since after some time there will be price increase or decrease for the product so it is important to know how much they paid during purchase
     pricePaidInCents Int 
@@ -55,9 +55,9 @@ model Order {
 }
 
 //helps to download the product for a given period of time
-model Download Verification {
-    id String @id @default(uuid()) 
-    expiredAt DateTime 
+model DownloadVerification {
+    id String @id @default(auto()) @map("_id") @db.ObjectId 
+    expiredAt DateTime @updatedAt
     createdAt DateTime @default(now())
     productId String 
     product Product @relation( fields: [ productId], references: [id], onDelete:Cascade )
