@@ -45,17 +45,16 @@ async function getUserData() {
   };
 }
 
-async function getProductData(){
-  
-const [ activeCount, inactiveCount ] = await Promise.all([
-  db.product.count({where:{isAvailableForPurchase:true}}),
-  db.product.count({where:{isAvailableForPurchase:false}})
-])
+async function getProductData() {
+  const [activeCount, inactiveCount] = await Promise.all([
+    db.product.count({ where: { isAvailableForPurchase: true } }),
+    db.product.count({ where: { isAvailableForPurchase: false } }),
+  ]);
 
-return {
-  activeCount,inactiveCount
-}
-
+  return {
+    activeCount,
+    inactiveCount,
+  };
 }
 
 export default async function AdminDashboard() {
@@ -63,7 +62,7 @@ export default async function AdminDashboard() {
   const [salesData, userData, productData] = await Promise.all([
     getSalesData(),
     getUserData(),
-    getProductData()
+    getProductData(),
   ]);
 
   return (

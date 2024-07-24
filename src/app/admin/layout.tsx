@@ -1,5 +1,10 @@
 import { Nav, Navlink } from "@/components/Nav";
 
+//this is done to avoid caching this is good for admin pages sinces admins typically have good internet speeds and need up to date changes
+//and frequency of admin access is relatively less compared to that of users page
+//since users use more often without caching there can be significant drop in performance
+export const dynamic = "force-dynamic"
+
 export default function AdminLayout({
   children,
 }: Readonly<{
